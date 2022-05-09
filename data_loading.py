@@ -12,9 +12,11 @@ class pixelBuffer:
 
         def __post_init__(self):
             self.buffer = []
+            self.id_for_training = []
 
         def add_data(self, pixel_item):
             self.buffer.append(pixel_item)
+            self.id_for_training.append(ds.patient_id)
 
         def __iter__(self):
             return self
