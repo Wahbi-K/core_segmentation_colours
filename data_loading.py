@@ -5,6 +5,9 @@ from dataclasses import dataclass
 from pydicom import dcmread
 from pydicom.data import get_testdata_file
 
+from formatting import Formatter
+import matplotlib.pyplot as plt
+
 @dataclass
 class pixelBuffer:
         buffer: list
@@ -12,11 +15,9 @@ class pixelBuffer:
 
         def __post_init__(self):
             self.buffer = []
-            self.id_for_training = []
 
         def add_data(self, pixel_item):
             self.buffer.append(pixel_item)
-            self.id_for_training.append(ds.patient_id)
 
         def __iter__(self):
             return self
@@ -26,11 +27,13 @@ class pixelBuffer:
             return self.buffer[self.index]
 
 
-class dataLoader:
+class dataLoader(Formatter):
 
     def __init__(self, dir, num_images):
+        super().__init__()
         self.dir = dir
         self.num_images = num_images
+        self.pixel_buffer = pixelBuffer(buffer=[])
 
     def load_in_images(self):
 
@@ -39,19 +42,19 @@ class dataLoader:
         limit = self.num_images if self.num_images <= num_files_in_dir else num_files_in_dir
 
         img_count = 0
-        pixel_list=pixelBuffer(buffer=[])
         for filename in file_list:
             ds = dcmread(os.path.join(self.dir, filename))
-            pixel_list.add_data(ds.pixel_array)
+            self.pixel_buffer.add_data(ds.pixel_array)
 
             img_count+=1
             if img_count >= limit:
                 break
 
-        return pixel_list
+    def format_images(self):
+        self.pixel_buffer.buffer = [self.format(array) for array in self.pixel_buffer.buffer]
 
 if __name__ == "__main__":
 
     dir = r"C:/Users/rashe/Downloads/segmentation_test_data"
     dl = dataLoader(dir, 3)
-    dl.load_in_images()
+    dataset = dl.load_in_images()

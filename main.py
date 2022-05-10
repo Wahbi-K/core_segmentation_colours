@@ -16,17 +16,24 @@ import cv2
 
 from data_loading import dataLoader
 
+DIR = r"C:/Users/rashe/Downloads/segmentation_test_data"
+
+
 if __name__=='__main__':
 
-    path = r'C:/Users/rashe/Downloads/trywahbifile'
 
-    sys.path.append(path)
+    sys.path.append(DIR)
 
-    loader = dataLoader(path, num_images=50)
+    loader = dataLoader(DIR, num_images=50)
+    loader.load_in_images()
 
-    #TODO: write processing unit to format the data
+    #Done: write processing unit to format the data
     #TODO: write GMM and thesholding module to classify pixels according to distro
     #TODO: write plotting module
 
-    plt.imshow(ds.pixel_array, cmap=plt.cm.bone)
+    plt.imshow(loader.pixel_buffer.buffer[0], cmap=plt.cm.bone)
+    plt.pause(10)
+    loader.format_images()
+
+    plt.imshow(loader.pixel_buffer.buffer[0], cmap=plt.cm.bone)
     plt.pause(10)
