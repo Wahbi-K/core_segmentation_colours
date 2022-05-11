@@ -15,6 +15,7 @@ import sys
 import cv2
 
 from data_loading import dataLoader
+from model import Clusterer
 
 DIR = r"C:/Users/rashe/Downloads/segmentation_test_data"
 
@@ -26,6 +27,13 @@ if __name__=='__main__':
 
     loader = dataLoader(DIR, num_images=50)
     loader.load_in_images()
+    loader.format_images()
+    train_x, test_x = loader.train_test_split()
+
+    import pdb; pdb.set_trace()
+
+    clust = Clusterer(clustering_method='GMM')
+    clust.fit(train_x)
 
     #Done: write processing unit to format the data
     #TODO: write GMM and thesholding module to classify pixels according to distro

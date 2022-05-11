@@ -1,5 +1,6 @@
 import os
-
+import numpy as np
+from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
 
 from pydicom import dcmread
@@ -24,6 +25,9 @@ class pixelBuffer:
         def __next__(self):
             self.index += 1
             return self.buffer[self.index]
+
+        def __len__(self):
+            return len(self.buffer)
 
 
 class dataLoader(Formatter):
@@ -50,7 +54,11 @@ class dataLoader(Formatter):
                 break
 
     def format_images(self):
-        self.pixel_buffer.buffer = [self.format(array) for array in self.pixel_buffer.buffer]
+        self.pixel_buffer.buffer = np.vstack([self.format(array) for array in self.pixel_buffer.buffer])
+
+    def train_test_split(self, split_ratio=0.7):
+        train_x, test_x = train_test_split(self.pixel_buffer.buffer, train_size=split_ratio, shuffle=True)
+        return train_x, test_x
 
 if __name__ == "__main__":
 
