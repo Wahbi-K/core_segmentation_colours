@@ -55,6 +55,6 @@ class dataLoader(Formatter):
 
 if __name__ == "__main__":
 
-    dir = r"C:/Users/rashe/Downloads/segmentation_test_data"
+    dir = r"C:\Users\wahbi\OneDrive - The University of Liverpool\Infarct Core Segmentation Project\Vitrea\Test1\DIACOM\WSDTI1R4\SC3I4ZVV"
     dl = dataLoader(dir, 3)
     dataset = dl.load_in_images()

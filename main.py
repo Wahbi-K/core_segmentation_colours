@@ -16,7 +16,9 @@ import cv2
 
 from data_loading import dataLoader
 
-DIR = r"C:/Users/rashe/Downloads/segmentation_test_data"
+# DIR = r"C:/Users/rashe/Downloads/segmentation_test_data"
+DIR = r"C:\Users\wahbi\OneDrive - The University of Liverpool\Infarct Core Segmentation Project\Vitrea\Test1\DIACOM\WSDTI1R4\SC3I4ZVV"
+
 
 
 if __name__=='__main__':
