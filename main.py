@@ -14,8 +14,9 @@ from pydicom.data import get_testdata_file
 import sys
 import cv2
 
-from data_loading import dataLoader
+from data_loading import dataLoader, reshape_images
 from model import Clusterer
+import constants
 
 DIR = r"C:/Users/rashe/Downloads/segmentation_test_data"
 
@@ -29,19 +30,20 @@ if __name__=='__main__':
     loader.load_in_images()
     loader.format_images()
     train_x, test_x = loader.train_test_split()
+    print("Data loaded and split into training and testing sets")
 
-    import pdb; pdb.set_trace()
-
-    clust = Clusterer(clustering_method='GMM')
+    clust = Clusterer(num_clusters = 50, clustering_method='GMM')
     clust.fit(train_x)
+    pixel_labels = clust.predict(train_x)
+    print("Clustering algorithm initialised and trained and labels predicted")
 
-    #Done: write processing unit to format the data
-    #TODO: write GMM and thesholding module to classify pixels according to distro
-    #TODO: write plotting module
+    pixel_labels = reshape_images(pixel_labels)
 
+    #TODO: segmentation sucks. Figure out why it's so bad 
+    print("Plotting image")
     plt.imshow(loader.pixel_buffer.buffer[0], cmap=plt.cm.bone)
     plt.pause(10)
-    loader.format_images()
 
-    plt.imshow(loader.pixel_buffer.buffer[0], cmap=plt.cm.bone)
+    print("Plotting segmented image")
+    plt.imshow(pixel_labels[0], cmap=plt.cm.bone)
     plt.pause(10)
