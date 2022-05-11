@@ -14,13 +14,28 @@ from pydicom.data import get_testdata_file
 import sys
 import cv2
 
+from data_loading import dataLoader
+
+# DIR = r"C:/Users/rashe/Downloads/segmentation_test_data"
+DIR = r"C:\Users\wahbi\OneDrive - The University of Liverpool\Infarct Core Segmentation Project\Vitrea\Test1\DIACOM\WSDTI1R4\SC3I4ZVV"
+
+
+
 if __name__=='__main__':
 
-    path = r'C:\Users\wahbi\OneDrive - The University of Liverpool\Infarct Core Segmentation Project\Vitrea\Test1\DIACOM\WSDTI1R4\SC3I4ZVV'
-    
-    sys.path.append(path)
-    
-    # Try for 1 image to start with - can loop this later or do it in parallel
-    ds = pydicom.dcmread(path+ "\I1090000")
-    
-    plt.imshow(ds.pixel_array, cmap=plt.cm.bone) 
+
+    sys.path.append(DIR)
+
+    loader = dataLoader(DIR, num_images=50)
+    loader.load_in_images()
+
+    #Done: write processing unit to format the data
+    #TODO: write GMM and thesholding module to classify pixels according to distro
+    #TODO: write plotting module
+
+    plt.imshow(loader.pixel_buffer.buffer[0], cmap=plt.cm.bone)
+    plt.pause(10)
+    loader.format_images()
+
+    plt.imshow(loader.pixel_buffer.buffer[0], cmap=plt.cm.bone)
+    plt.pause(10)
