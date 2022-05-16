@@ -1,6 +1,6 @@
 import numpy as np
 
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
 
 class Clusterer:
@@ -13,9 +13,11 @@ class Clusterer:
 
     def instantiate_model(self) -> None:
         if self.clustering_method == 'KNN':
-            self.model = KNeighborsClassifier(n_neighbors=self.num_clusters)
+            self.model = KMeans(n_clusters=self.num_clusters)
         elif self.clustering_method == 'GMM':
             self.model = GaussianMixture(n_components=self.num_clusters)
+        else:
+            raise ValueError("Choose from GMM or KNN")
 
     def fit(self, data: np.array) -> None:
         self.model.fit(data)
@@ -25,7 +27,7 @@ class Clusterer:
 
     @property
     def centroids(self) -> np.array:
-        return self.model.means_
+        return self.model.cluster_centers_
 
     def collapse_centroids(self, threshold):
         raise NotImplementedError

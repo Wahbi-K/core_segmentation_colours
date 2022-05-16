@@ -68,7 +68,7 @@ def reshape_images(data: np.array) -> list:
     num_imgs = int(len(data)/resolution)
     segmented_image = []
     for n in range(num_imgs):
-        segmented_image.append(data[resolution*n:resolution*(n+1)].reshape(constants.PIXEL_RESOLUTION[0], constants.PIXEL_RESOLUTION[1]))
+        segmented_image.append(data[resolution*n:resolution*(n+1)].reshape(constants.PIXEL_RESOLUTION[0],constants.PIXEL_RESOLUTION[1]))
 
     return segmented_image
 
@@ -76,5 +76,6 @@ def reshape_images(data: np.array) -> list:
 if __name__ == "__main__":
 
     dir = r"C:/Users/rashe/Downloads/segmentation_test_data"
-    dl = dataLoader(dir, 3)
+    dl = dataLoader(dir, 1)
+    import pdb; pdb.set_trace()
     dataset = dl.load_in_images()
