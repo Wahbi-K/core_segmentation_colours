@@ -13,7 +13,7 @@ class Clusterer:
 
     def instantiate_model(self) -> None:
         if self.clustering_method == 'KNN':
-            self.model = KMeans(n_clusters=self.num_clusters)
+            self.model = KMeans(n_clusters=self.num_clusters, max_iter=10000)
         elif self.clustering_method == 'GMM':
             self.model = GaussianMixture(n_components=self.num_clusters)
         else:
@@ -27,7 +27,9 @@ class Clusterer:
 
     @property
     def centroids(self) -> np.array:
-        return self.model.cluster_centers_
+        if self.clustering_method=='KNN':
+            return self.model.cluster_centers_
+        return self.model.means_
 
     def collapse_centroids(self, threshold):
         raise NotImplementedError

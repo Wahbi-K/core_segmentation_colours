@@ -10,10 +10,7 @@ import argparse
 
 import numpy as np
 import matplotlib.pyplot as plt
-import pydicom
-from pydicom.data import get_testdata_file
 import sys
-import cv2
 
 from data_loading import dataLoader, reshape_images
 from model import Clusterer
@@ -26,9 +23,7 @@ def parse_args():
     parser.add_argument('--num_images', default=2, type=int)
     parser.add_argument('--num_clusters', default=10, type=int)
     parser.add_argument('--clustering_method', default='KNN', type=str)
-
     args = parser.parse_args()
-
     return args
 
 def main(args):
@@ -42,9 +37,7 @@ def main(args):
     clust.fit(train_x)
     pixel_labels = clust.predict(train_x)
     print("Clustering algorithm initialised and trained and labels predicted")
-
     pixel_labels = reshape_images(pixel_labels)
-    import pdb; pdb.set_trace()
 
     print("Plotting image")
     plt.imshow(loader.pixel_buffer.buffer[0], cmap=plt.cm.bone)
@@ -56,9 +49,5 @@ def main(args):
 
 if __name__=='__main__':
 
-    args = parse_args()
-
-
     sys.path.append(DIR)
-
-    main(args)
+    main(parse_args())
