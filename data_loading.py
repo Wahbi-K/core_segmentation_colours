@@ -11,38 +11,46 @@ import constants
 
 @dataclass
 class pixelBuffer:
-        buffer: list
-        index: int = -1
+    """Dataclass to store pixels in buffer-like objects"""
+    buffer: list #kept this argument as we may want to add to an exisitng buffer
+    index: int = -1
 
-        def __post_init__(self):
-            self.buffer = []
+    def __post_init__(self):
+        self.buffer = []
 
-        def add_data(self, pixel_item: np.array) -> None:
-            self.buffer.append(pixel_item)
+    def add_data(self, pixel_item: np.array) -> None:
+        """Simply appends a data point to the data buffer being constructed
+        """
+        self.buffer.append(pixel_item)
 
-        def __iter__(self):
-            return self
+    def __iter__(self):
+        return self
 
-        def __next__(self):
-            self.index += 1
-            return self.buffer[self.index]
+    def __next__(self):
+        self.index += 1
+        return self.buffer[self.index]
 
-        def __len__(self):
-            return len(self.buffer)
+    def __len__(self):
+        return len(self.buffer)
 
 
 class dataLoader(Formatter):
+    """Class to load in pixel datasets to conduct segmentation on the images"""
 
     def __init__(self, dir: str, num_images: int):
         super().__init__()
         self.dir = dir
         self.num_images = num_images
-        self.pixel_buffer = pixelBuffer(buffer=[])
+        self.pixel_buffer = pixelBuffer(buffer=[]) #initialise pixel buffer
 
     def load_in_images(self) -> None:
+        """method that allows us to load in the pixels as independent data
+        points and treat them as iid. This allows for them to be shuffled and
+        trained on by separating into training and test sets."""
 
         file_list = os.listdir(self.dir)
         num_files_in_dir = len([filename for filename in file_list if os.path.isfile(os.path.join(self.dir,filename))])
+        #The smaller of the number specified or number of images that exist in file is selected
         limit = self.num_images if self.num_images <= num_files_in_dir else num_files_in_dir
 
         img_count = 0
@@ -52,18 +60,30 @@ class dataLoader(Formatter):
 
             img_count+=1
             if img_count >= limit:
+                self.file_list = file_list[:limit]
                 break
 
+        #File names are saved out so we can match these up again when we segment them
+        self.file_list = file_list[:img_count]
+        #Keep the actual number of images in the object as opposed to the specified
+        self.num_images = img_count
+
     def format_images(self) -> None:
-        self.pixel_buffer.format_buffer = np.vstack([self.format(array) for array in self.pixel_buffer.buffer])
+        """flatten the images for training"""
+        self.pixel_buffer.format_buffer = np.vstack([self.format(array, grey=False) for array in self.pixel_buffer.buffer])
 
     def train_test_split(self, split_ratio: float = 0.7) -> (np.array, np.array):
+        """split pixels into train and test sets"""
+
+        #This logic is to ensure that we keep full images in training sets but not necessary
         num_full_images = np.round((split_ratio*len(self.pixel_buffer.format_buffer))/constants.PIXEL_RESOLUTION[0]**2)
         train_size = num_full_images*constants.PIXEL_RESOLUTION[0]**2
+
         train_x, test_x = train_test_split(self.pixel_buffer.format_buffer, train_size=int(train_size), shuffle=True)
         return train_x, test_x
 
 def reshape_images(data: np.array) -> list:
+    """method that reconstructs the segmented image from the predictions"""
     resolution = constants.PIXEL_RESOLUTION[0]*constants.PIXEL_RESOLUTION[1]
     num_imgs = int(len(data)/resolution)
     segmented_image = []
@@ -71,11 +91,3 @@ def reshape_images(data: np.array) -> list:
         segmented_image.append(data[resolution*n:resolution*(n+1)].reshape(constants.PIXEL_RESOLUTION[0],constants.PIXEL_RESOLUTION[1]))
 
     return segmented_image
-
-
-if __name__ == "__main__":
-
-    dir = r"C:/Users/rashe/Downloads/segmentation_test_data"
-    dl = dataLoader(dir, 1)
-    import pdb; pdb.set_trace()
-    dataset = dl.load_in_images()
