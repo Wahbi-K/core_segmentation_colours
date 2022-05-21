@@ -22,14 +22,15 @@ TEST_DIR = r"C:/Users/rashe/Downloads/segmentation_test_data"
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--num_images', default=10, type=int)
+    parser.add_argument('--num_train_images', default=10, type=int)
+    parser.add_argument('--num_test_images', default=10, type=int)
     parser.add_argument('--num_clusters', default=10, type=int)
     parser.add_argument('--clustering_method', default='KNN', type=str)
     args = parser.parse_args()
     return args
 
 def main(args):
-    loader = dataLoader(TRAIN_DIR, num_images=args.num_images)
+    loader = dataLoader(TRAIN_DIR, num_images=args.num_train_images)
     loader.load_in_images()
     loader.format_images()
     train_x, test_x = loader.train_test_split()
@@ -41,7 +42,7 @@ def main(args):
     print("Clustering algorithm initialised and trained and labels predicted")
     pixel_labels = reshape_images(pixel_labels)
 
-    inferer = Inferer(clust, dir=TEST_DIR, num_images=50)
+    inferer = Inferer(clust, dir=TEST_DIR, num_images=args.num_test_images)
     inferer.save_inferred_plots()
 
 if __name__=='__main__':
