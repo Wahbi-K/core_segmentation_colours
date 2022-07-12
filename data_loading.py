@@ -55,13 +55,14 @@ class dataLoader(Formatter):
 
         img_count = 0
         for filename in file_list:
-            ds = dcmread(os.path.join(self.dir, filename))
-            self.pixel_buffer.add_data(ds.pixel_array)
-
-            img_count+=1
-            if img_count >= limit:
-                self.file_list = file_list[:limit]
-                break
+            if filename.startswith('I'):
+                ds = dcmread(os.path.join(self.dir, filename))
+                self.pixel_buffer.add_data(ds.pixel_array)
+    
+                img_count+=1
+                if img_count >= limit:
+                    self.file_list = file_list[:limit]
+                    break
 
         #File names are saved out so we can match these up again when we segment them
         self.file_list = file_list[:img_count]

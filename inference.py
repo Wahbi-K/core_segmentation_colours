@@ -37,3 +37,5 @@ class Inferer:
             plt.imshow(image, cmap=plt.cm.bone)
             plt.savefig(os.path.join(results_folder, filename+"_segmented.png"), format='png')
             plt.close()
+        
+        return self.construct_segmented_images()
