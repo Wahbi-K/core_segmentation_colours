@@ -68,6 +68,22 @@ class dataLoader(Formatter):
         self.file_list = file_list[:img_count]
         #Keep the actual number of images in the object as opposed to the specified
         self.num_images = img_count
+        
+    def transform_to_hu(medical_image, image):
+        intercept = medical_image.RescaleIntercept
+        slope = medical_image.RescaleSlope
+        hu_image = image * slope + intercept
+
+        return hu_image
+    
+    def window_image(image, window_center, window_width):
+        img_min = window_center - window_width // 2
+        img_max = window_center + window_width // 2
+        window_image = image.copy()
+        window_image[window_image < img_min] = img_min
+        window_image[window_image > img_max] = img_max
+    
+        return window_image
 
     def format_images(self) -> None:
         """flatten the images for training"""

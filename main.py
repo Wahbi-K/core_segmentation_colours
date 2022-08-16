@@ -10,6 +10,7 @@ Created on Tue Apr 19 12:15:57 2022
 import argparse
 import time
 
+import copy
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
@@ -19,17 +20,17 @@ from model import Clusterer
 import constants
 from inference import Inferer
 
-# TRAIN_DIR = r"C:\Users\wahbi\OneDrive - The University of Liverpool\Infarct Core Segmentation Project\Vitrea\Test1\DIACOM\WSDTI1R4\SC3I4ZVV"
-# TEST_DIR = r"C:\Users\wahbi\OneDrive - The University of Liverpool\Infarct Core Segmentation Project\Vitrea\Test1\DIACOM\WSDTI1R4\SC3I4ZVV"
+TRAIN_DIR = r"C:\Users\wahbi\OneDrive - The University of Liverpool\Infarct Core Segmentation Project\Vitrea\Test1\DIACOM\WSDTI1R4\SC3I4ZVV"
+TEST_DIR = r"C:\Users\wahbi\OneDrive - The University of Liverpool\Infarct Core Segmentation Project\Vitrea\Test1\DIACOM\WSDTI1R4\SC3I4ZVV"
 
-TRAIN_DIR = r"C:\Users\wahbi\OneDrive - The University of Liverpool\Infarct Core Segmentation Project\Vitrea\Test2\DIACOM\DOOBF10L\OGWZ55UX"
-TEST_DIR = TRAIN_DIR
+# TRAIN_DIR = r"C:\Users\wahbi\OneDrive - The University of Liverpool\Infarct Core Segmentation Project\Vitrea\Test2\DIACOM\DOOBF10L\OGWZ55UX"
+# TEST_DIR = TRAIN_DIR
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--num_train_images', default=5000, type=int)
     parser.add_argument('--num_test_images', default=5000, type=int)
-    parser.add_argument('--num_clusters', default=11, type=int)
+    parser.add_argument('--num_clusters', default=12, type=int)
     parser.add_argument('--clustering_method', default='KNN', type=str)
     args = parser.parse_args()
     return args
@@ -53,7 +54,7 @@ def main(args):
     return pixel_labels, clust, seg_images
 
 if __name__=='__main__':
-    num_clusters = 11
+    num_clusters = 12
     t = time.time()
     sys.path.append(TRAIN_DIR)
     pixel_lables, clust, seg_images = main(parse_args())
@@ -66,10 +67,13 @@ if __name__=='__main__':
     
     # get into cm3
     # each pixel = 0.25mm3
-    mask = mask*0.25/1000
+    mask_dummy = copy.deepcopy(mask)
+    mask_dummy = mask*0.25/1000
+    TEST2 = 68 #pixels for 3 cm
+    TEST1 = 64 #pixels for 3cm
     
     # plots
-    i = 121
+    i = 10
     plt.imshow(seg_images[i], cmap=plt.cm.bone)
     plt.imshow((seg_images[i] == 0)*1, cmap=plt.cm.bone)
     plt.imshow((seg_images[i] == 1)*1, cmap=plt.cm.bone) #b
@@ -82,3 +86,10 @@ if __name__=='__main__':
     plt.imshow((seg_images[i] == 8)*1, cmap=plt.cm.bone)
     plt.imshow((seg_images[i] == 9)*1, cmap=plt.cm.bone)
     plt.imshow((seg_images[i] == 10)*1, cmap=plt.cm.bone)
+    plt.imshow((seg_images[i] == 11)*1, cmap=plt.cm.bone)
+    plt.imshow((seg_images[i] == 12)*1, cmap=plt.cm.bone)
+    plt.imshow((seg_images[i] == 13)*1, cmap=plt.cm.bone)
+    plt.imshow((seg_images[i] == 14)*1, cmap=plt.cm.bone)
+    plt.imshow((seg_images[i] == 15)*1, cmap=plt.cm.bone)
+    plt.imshow((seg_images[i] == 16)*1, cmap=plt.cm.bone)
+    plt.imshow((seg_images[i] == 17)*1, cmap=plt.cm.bone)
